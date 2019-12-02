@@ -3,14 +3,17 @@ use std::io::BufRead;
 use std::io::BufReader;
 
 pub fn run_a() {
-   run("a", calculate_module_fuel);
+    run("a", calculate_module_fuel);
 }
 
-pub fn run_b(){
-   run("b", calculate_full_fuel);
+pub fn run_b() {
+    run("b", calculate_full_fuel);
 }
 
-pub fn run<F>(part: &'static str, f: F) where F: Fn(i32) -> i32 {
+pub fn run<F>(part: &'static str, f: F)
+where
+    F: Fn(i32) -> i32,
+{
     println!(
         "1{}: Total: {}",
         part,

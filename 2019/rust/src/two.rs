@@ -1,15 +1,47 @@
-pub fn run() {
-    let data = std::fs::read_to_string("2a.txt").expect("Unable to read file");
-    let data = data.trim();
-    let mut program = parse_program(data);
+pub fn run_a() {
+    let data = std::fs::read_to_string("2.txt").expect("Unable to read file");
+    let mut program = parse_program(&data);
     program[1] = 12;
     program[2] = 2;
     let program = execute_program(program);
     println!("2a: program[0] = {}", program[0]);
 }
 
+pub fn run_b() {
+    let data = std::fs::read_to_string("2.txt").expect("Unable to read file");
+    let program = parse_program(&data);
+
+    let mut x = 0;
+    let mut y = 0;
+
+    loop {
+        let mut program = program.clone();
+
+        program[1] = x;
+        program[2] = y;
+
+        let program = execute_program(program);
+
+        if program[0] == 19_690_720 {
+            println!(
+                "2b: 100 * program[1] + program[2] = {}",
+                (100 * program[1]) + program[2]
+            );
+            return;
+        }
+
+        if x == (program.len() - 1) {
+            x = 0;
+            y += 1;
+        } else {
+            x += 1;
+        }
+    }
+}
+
 fn parse_program(input: &str) -> Vec<usize> {
     input
+        .trim()
         .split(',')
         .map(|s| s.parse().expect(&format!("Invalid entry: {}", s)))
         .collect()
