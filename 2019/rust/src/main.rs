@@ -1,7 +1,8 @@
-mod one_a;
+mod one;
 mod two_a;
 
 fn main() {
-    one_a::run();
+    one::run_a();
+    one::run_b();
     two_a::run();
 }
