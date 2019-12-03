@@ -1,4 +1,5 @@
 mod one;
+mod three;
 mod two;
 
 fn main() {
@@ -6,4 +7,5 @@ fn main() {
     one::run_b();
     two::run_a();
     two::run_b();
+    three::run_a();
 }
