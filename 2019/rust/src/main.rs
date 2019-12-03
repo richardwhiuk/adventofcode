@@ -8,4 +8,5 @@ fn main() {
     two::run_a();
     two::run_b();
     three::run_a();
+    three::run_b();
 }
