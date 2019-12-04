@@ -11,4 +11,5 @@ fn main() {
     three::run_a();
     three::run_b();
     four::run_a();
+    four::run_b();
 }
