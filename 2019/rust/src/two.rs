@@ -1,9 +1,11 @@
+use crate::intcode::*;
+
 pub fn run_a() {
     let data = std::fs::read_to_string("2.txt").expect("Unable to read file");
     let mut program = parse_program(&data);
     program[1] = 12;
     program[2] = 2;
-    let program = execute_program(program);
+    let (program, _) = execute_program(program, vec![]);
     println!("2a: program[0] = {}", program[0]);
 }
 
@@ -20,7 +22,7 @@ pub fn run_b() {
         program[1] = x;
         program[2] = y;
 
-        let program = execute_program(program);
+        let (program, _) = execute_program(program, vec![]);
 
         if program[0] == 19_690_720 {
             println!(
@@ -30,63 +32,13 @@ pub fn run_b() {
             return;
         }
 
-        if x == (program.len() - 1) {
+        if (x as usize) == (program.len() - 1) {
             x = 0;
             y += 1;
         } else {
             x += 1;
         }
     }
-}
-
-fn parse_program(input: &str) -> Vec<usize> {
-    input
-        .trim()
-        .split(',')
-        .map(|s| s.parse().expect(&format!("Invalid entry: {}", s)))
-        .collect()
-}
-
-#[cfg(test)]
-fn execute_string(input: &str) -> Vec<usize> {
-    execute_program(parse_program(input))
-}
-
-fn execute_program(mut input: Vec<usize>) -> Vec<usize> {
-    let mut position = 0;
-
-    loop {
-        match input[position] {
-            1 => {
-                // Opcode Add
-                let res_loc = input[position + 3];
-                input[res_loc] = input[input[position + 1]] + input[input[position + 2]];
-                position += 4
-            }
-            2 => {
-                // Opcode Multiply
-                let res_loc = input[position + 3];
-                input[res_loc] = input[input[position + 1]] * input[input[position + 2]];
-                position += 4
-            }
-            99 => {
-                // Opcode Quit
-                return input;
-            }
-            opcode => {
-                panic!("Unexpected opcode: {}", opcode);
-            }
-        }
-    }
-}
-
-#[cfg(test)]
-fn execute_to_string(input: &str) -> String {
-    let r: Vec<_> = execute_string(input)
-        .iter()
-        .map(|s| s.to_string())
-        .collect();
-    r.join(",")
 }
 
 #[cfg(test)]
