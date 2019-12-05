@@ -152,25 +152,37 @@ mod tests {
 
     #[test]
     fn pos_mode_equal() {
-assert_eq!(execute_string("3,9,8,9,10,9,4,9,99,-1,8", vec![8]).1, vec![1]);
-assert_eq!(execute_string("3,9,8,9,10,9,4,9,99,-1,8", vec![9]).1, vec![0]);
+        assert_eq!(
+            execute_string("3,9,8,9,10,9,4,9,99,-1,8", vec![8]).1,
+            vec![1]
+        );
+        assert_eq!(
+            execute_string("3,9,8,9,10,9,4,9,99,-1,8", vec![9]).1,
+            vec![0]
+        );
     }
 
     #[test]
     fn pos_mode_less() {
-assert_eq!(execute_string("3,9,7,9,10,9,4,9,99,-1,8", vec![8]).1, vec![0]);
-assert_eq!(execute_string("3,9,7,9,10,9,4,9,99,-1,8", vec![7]).1, vec![1]);
+        assert_eq!(
+            execute_string("3,9,7,9,10,9,4,9,99,-1,8", vec![8]).1,
+            vec![0]
+        );
+        assert_eq!(
+            execute_string("3,9,7,9,10,9,4,9,99,-1,8", vec![7]).1,
+            vec![1]
+        );
     }
 
     #[test]
     fn imm_mode_equal() {
-assert_eq!(execute_string("3,3,1108,-1,8,3,4,3,99", vec![8]).1, vec![1]);
-assert_eq!(execute_string("3,3,1108,-1,8,3,4,3,99", vec![7]).1, vec![0]);
+        assert_eq!(execute_string("3,3,1108,-1,8,3,4,3,99", vec![8]).1, vec![1]);
+        assert_eq!(execute_string("3,3,1108,-1,8,3,4,3,99", vec![7]).1, vec![0]);
     }
 
     #[test]
     fn imm_mode_less() {
-assert_eq!(execute_string("3,3,1107,-1,8,3,4,3,99", vec![8]).1, vec![0]);
-assert_eq!(execute_string("3,3,1107,-1,8,3,4,3,99", vec![7]).1, vec![1]);
+        assert_eq!(execute_string("3,3,1107,-1,8,3,4,3,99", vec![8]).1, vec![0]);
+        assert_eq!(execute_string("3,3,1107,-1,8,3,4,3,99", vec![7]).1, vec![1]);
     }
 }
