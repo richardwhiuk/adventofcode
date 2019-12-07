@@ -7,6 +7,29 @@ pub struct IntcodeResult {
     pub output: Vec<i32>,
 }
 
+pub enum IntcodeState {
+    NeedMoreInput(IntcodeVm),
+    Finished(IntcodeResult)
+}
+
+pub use IntcodeState::*;
+
+impl IntcodeState {
+    fn unwrap(self) -> IntcodeResult {
+        match self {
+            NeedMoreInput(_) => panic!("Need more input"),
+            Finished(f) => f,
+        }
+    }
+
+    pub fn get_output(&self) -> Vec<i32> {
+        match self {
+            NeedMoreInput(vm) => vm.output.clone(),
+            Finished(res) => res.output.clone()
+        }
+    }
+}
+
 impl Intcode {
     pub fn from(program: &str) -> Self {
         Self(
@@ -23,6 +46,10 @@ impl Intcode {
     }
 
     pub fn input(self, input: Vec<i32>) -> IntcodeResult {
+        self.inputc(input).unwrap()
+    }
+
+    pub fn inputc(self, input: Vec<i32>) -> IntcodeState {
         IntcodeVm {
             program: self.0,
             input: input,
@@ -33,7 +60,7 @@ impl Intcode {
     }
 }
 
-struct IntcodeVm {
+pub struct IntcodeVm {
     position: usize,
     program: Vec<i32>,
     input: Vec<i32>,
@@ -41,6 +68,10 @@ struct IntcodeVm {
 }
 
 impl IntcodeVm {
+    pub fn add_input(&mut self, input: i32) {
+        self.input.push(input);
+    }
+
     fn param(&mut self, mode: i32) -> i32 {
         let val = self.program[self.position];
         self.position += 1;
@@ -63,7 +94,7 @@ impl IntcodeVm {
         self.position += 1;
     }
 
-    fn execute(mut self) -> IntcodeResult {
+    pub fn execute(mut self) -> IntcodeState {
         loop {
             let code = self.program[self.position];
 
@@ -89,8 +120,16 @@ impl IntcodeVm {
                 }
                 3 => {
                     // Opcode Input
-                    let rc = self.input.pop().expect("Unsufficient input available");
-                    self.result(rc);
+                    match self.input.pop() {
+                        Some(input) => {
+                            self.result(input);
+                        },
+                        None => {
+                            // Move the IP back to when we needed the input
+                            self.position -= 1;
+                            return NeedMoreInput(self)
+                        }
+                    }
                 }
                 4 => {
                     // Opcode Output
@@ -127,10 +166,10 @@ impl IntcodeVm {
                 }
                 99 => {
                     // Opcode Quit
-                    return IntcodeResult {
+                    return Finished(IntcodeResult {
                         program: self.program,
                         output: self.output,
-                    };
+                    });
                 }
                 opcode => {
                     panic!("Unexpected opcode: {}", opcode);
