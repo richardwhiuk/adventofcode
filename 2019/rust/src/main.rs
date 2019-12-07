@@ -4,6 +4,7 @@ mod one;
 mod six;
 mod three;
 mod two;
+mod seven;
 
 mod intcode;
 
@@ -20,4 +21,5 @@ fn main() {
     five::run_b();
     six::run_a();
     six::run_b();
+    seven::run_a();
 }
