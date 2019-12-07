@@ -9,7 +9,7 @@ pub struct IntcodeResult {
 
 pub enum IntcodeState {
     NeedMoreInput(IntcodeVm),
-    Finished(IntcodeResult)
+    Finished(IntcodeResult),
 }
 
 pub use IntcodeState::*;
@@ -25,7 +25,7 @@ impl IntcodeState {
     pub fn get_output(&self) -> Vec<i32> {
         match self {
             NeedMoreInput(vm) => vm.output.clone(),
-            Finished(res) => res.output.clone()
+            Finished(res) => res.output.clone(),
         }
     }
 }
@@ -123,11 +123,11 @@ impl IntcodeVm {
                     match self.input.pop() {
                         Some(input) => {
                             self.result(input);
-                        },
+                        }
                         None => {
                             // Move the IP back to when we needed the input
                             self.position -= 1;
-                            return NeedMoreInput(self)
+                            return NeedMoreInput(self);
                         }
                     }
                 }
