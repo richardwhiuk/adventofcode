@@ -10,7 +10,7 @@ pub fn run_b() {
     println!("7b: {}", determine_phases(&data, vec![5, 6, 7, 8, 9]).1);
 }
 
-fn determine_phases(prog: &str, phases: Vec<i32>) -> (Vec<i32>, i32) {
+fn determine_phases(prog: &str, phases: Vec<i64>) -> (Vec<i64>, i64) {
     let mut best = vec![];
     let mut best_score = 0;
 
@@ -28,7 +28,7 @@ fn determine_phases(prog: &str, phases: Vec<i32>) -> (Vec<i32>, i32) {
     return (best, best_score);
 }
 
-fn run_amplifiers(phases: Vec<i32>, amplifier: &Intcode) -> i32 {
+fn run_amplifiers(phases: Vec<i64>, amplifier: &Intcode) -> i64 {
     let mut amplifiers = vec![];
     let mut input = 0;
 
@@ -62,7 +62,7 @@ fn run_amplifiers(phases: Vec<i32>, amplifier: &Intcode) -> i32 {
     }
 }
 
-fn get_phase_options(phases: Vec<i32>) -> Vec<Vec<i32>> {
+fn get_phase_options(phases: Vec<i64>) -> Vec<Vec<i64>> {
     let mut result = vec![];
 
     get_phase_option(phases, vec![], &mut result);
@@ -70,7 +70,7 @@ fn get_phase_options(phases: Vec<i32>) -> Vec<Vec<i32>> {
     result
 }
 
-fn get_phase_option(options: Vec<i32>, start: Vec<i32>, result: &mut Vec<Vec<i32>>) {
+fn get_phase_option(options: Vec<i64>, start: Vec<i64>, result: &mut Vec<Vec<i64>>) {
     if options.len() == 0 {
         result.push(start);
     } else {

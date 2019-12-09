@@ -97,6 +97,6 @@ mod tests {
 
     #[test]
     fn test_b() {
-        assert_eq!(get_image("0222112222120000".to_string(), 2, 2), "0110");
+        assert_eq!(get_image("0222112222120000".to_string(), 2, 2), " ## ");
     }
 }

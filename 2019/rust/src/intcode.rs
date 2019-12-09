@@ -1,10 +1,10 @@
 #[derive(Debug, Clone)]
-pub struct Intcode(pub Vec<i32>);
+pub struct Intcode(pub Vec<i64>);
 
 #[derive(Debug, Clone)]
 pub struct IntcodeResult {
-    pub program: Vec<i32>,
-    pub output: Vec<i32>,
+    pub program: Vec<i64>,
+    pub output: Vec<i64>,
 }
 
 pub enum IntcodeState {
@@ -22,7 +22,7 @@ impl IntcodeState {
         }
     }
 
-    pub fn get_output(&self) -> Vec<i32> {
+    pub fn get_output(&self) -> Vec<i64> {
         match self {
             NeedMoreInput(vm) => vm.output.clone(),
             Finished(res) => res.output.clone(),
@@ -45,16 +45,17 @@ impl Intcode {
         self.input(vec![])
     }
 
-    pub fn input(self, input: Vec<i32>) -> IntcodeResult {
+    pub fn input(self, input: Vec<i64>) -> IntcodeResult {
         self.inputc(input).unwrap()
     }
 
-    pub fn inputc(self, input: Vec<i32>) -> IntcodeState {
+    pub fn inputc(self, input: Vec<i64>) -> IntcodeState {
         IntcodeVm {
             program: self.0,
             input: input,
             position: 0,
             output: vec![],
+            relative_base: 0,
         }
         .execute()
     }
@@ -62,35 +63,56 @@ impl Intcode {
 
 pub struct IntcodeVm {
     position: usize,
-    program: Vec<i32>,
-    input: Vec<i32>,
-    output: Vec<i32>,
+    program: Vec<i64>,
+    input: Vec<i64>,
+    output: Vec<i64>,
+    relative_base: i64,
 }
 
 impl IntcodeVm {
-    pub fn add_input(&mut self, input: i32) {
+    pub fn add_input(&mut self, input: i64) {
         self.input.push(input);
     }
 
-    fn param(&mut self, mode: i32) -> i32 {
+    fn param(&mut self, mode: i64) -> i64 {
         let val = self.program[self.position];
         self.position += 1;
         match mode {
             0 => {
                 // Position mode
-                self.program[val as usize]
+                self.program
+                    .get(val as usize)
+                    .map(Clone::clone)
+                    .unwrap_or(0)
             }
             1 => {
                 // Immediate mode
                 val
             }
+            2 => {
+                // Relative base
+                self.program[(val + self.relative_base) as usize]
+            }
             mode => panic!("Unknown parameter mode: {}", mode),
         }
     }
 
-    fn result(&mut self, value: i32) {
-        let res_loc = self.program[self.position];
-        self.program[res_loc as usize] = value;
+    fn result(&mut self, value: i64, mode: i64) {
+        let val = self.program[self.position];
+        let res_loc = match mode {
+            0 => {
+                val
+            }
+            2 => {
+                val + self.relative_base
+            }
+            mode => panic!("Unexpected parameter mode: {}", mode),
+        };
+        let res_loc = res_loc as usize;
+        if self.program.len() <= res_loc {
+            self.program.resize(res_loc + 1, 0);
+        }
+        self.program[res_loc] = value;
         self.position += 1;
     }
 
@@ -102,7 +124,7 @@ impl IntcodeVm {
             let param_modes = code / 100;
             let param_mode_a = param_modes % 10;
             let param_mode_b = (param_modes / 10) % 10;
-            //let param_mode_c = (param_modes / 100) % 10;
+            let param_mode_c = (param_modes / 100) % 10;
             self.position += 1;
 
             match opcode {
@@ -110,19 +132,19 @@ impl IntcodeVm {
                     // Opcode Add
                     let a = self.param(param_mode_a);
                     let b = self.param(param_mode_b);
-                    self.result(a + b);
+                    self.result(a + b, param_mode_c);
                 }
                 2 => {
                     // Opcode Multiply
                     let a = self.param(param_mode_a);
                     let b = self.param(param_mode_b);
-                    self.result(a * b);
+                    self.result(a * b, param_mode_c);
                 }
                 3 => {
                     // Opcode Input
                     match self.input.pop() {
                         Some(input) => {
-                            self.result(input);
+                            self.result(input, param_mode_a);
                         }
                         None => {
                             // Move the IP back to when we needed the input
@@ -156,13 +178,18 @@ impl IntcodeVm {
                     // Less than
                     let a = self.param(param_mode_a);
                     let b = self.param(param_mode_b);
-                    self.result(if a < b { 1 } else { 0 });
+                    self.result(if a < b { 1 } else { 0 }, param_mode_c);
                 }
                 8 => {
                     // Equals
                     let a = self.param(param_mode_a);
                     let b = self.param(param_mode_b);
-                    self.result(if a == b { 1 } else { 0 });
+                    self.result(if a == b { 1 } else { 0 }, param_mode_c);
+                }
+                9 => {
+                    // Relative base adjust
+                    let a = self.param(param_mode_a);
+                    self.relative_base += a;
                 }
                 99 => {
                     // Opcode Quit
@@ -265,6 +292,36 @@ mod tests {
                 .input(vec![7])
                 .output,
             vec![1]
+        );
+    }
+
+    #[test]
+    fn relative_base_test() {
+        assert_eq!(
+            Intcode::from("109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99")
+                .input(vec![])
+                .output,
+            vec![109, 1, 204, -1, 1001, 100, 1, 100, 1008, 100, 16, 101, 1006, 101, 0, 99]
+        );
+    }
+
+    #[test]
+    fn sixteen_digit_number() {
+        assert_eq!(
+            Intcode::from("1102,34915192,34915192,7,4,7,99,0")
+                .input(vec![])
+                .output,
+            vec![1219070632396864]
+        );
+    }
+
+    #[test]
+    fn large_number() {
+        assert_eq!(
+            Intcode::from("104,1125899906842624,99")
+                .input(vec![])
+                .output,
+            vec![1125899906842624]
         );
     }
 }
