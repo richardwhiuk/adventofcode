@@ -56,6 +56,7 @@ impl Intcode {
             position: 0,
             output: vec![],
             relative_base: 0,
+            cycles: 0,
         }
         .execute()
     }
@@ -67,6 +68,7 @@ pub struct IntcodeVm {
     input: Vec<i64>,
     output: Vec<i64>,
     relative_base: i64,
+    cycles: i64,
 }
 
 impl IntcodeVm {
@@ -100,12 +102,8 @@ impl IntcodeVm {
     fn result(&mut self, value: i64, mode: i64) {
         let val = self.program[self.position];
         let res_loc = match mode {
-            0 => {
-                val
-            }
-            2 => {
-                val + self.relative_base
-            }
+            0 => val,
+            2 => val + self.relative_base,
             mode => panic!("Unexpected parameter mode: {}", mode),
         };
         let res_loc = res_loc as usize;
@@ -118,6 +116,7 @@ impl IntcodeVm {
 
     pub fn execute(mut self) -> IntcodeState {
         loop {
+            self.cycles += 1;
             let code = self.program[self.position];
 
             let opcode = code % 100;
