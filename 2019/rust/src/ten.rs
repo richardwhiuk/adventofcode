@@ -21,7 +21,7 @@ pub fn run_a() {
 
 pub fn run_b() {
     let res = Map::parse("10.txt").destroy_asteroids()[199];
-    println!("10a: {}", (res.0 * 100) + res.1);
+    println!("10b: {}", (res.0 * 100) + res.1);
 }
 
 #[derive(Debug, PartialEq, Clone, Copy)]
