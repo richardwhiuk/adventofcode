@@ -22,6 +22,13 @@ impl IntcodeState {
         }
     }
 
+    pub fn output(&self) -> &Vec<i64> {
+        match self {
+            NeedMoreInput(vm) => &vm.output,
+            Finished(res) => &res.output,
+        }
+    }
+
     pub fn get_output(&self) -> Vec<i64> {
         match self {
             NeedMoreInput(vm) => vm.output.clone(),
