@@ -3,3 +3,6 @@ name = "adventofcode2019"
 version = "0.1.0"
 authors = ["Richard Whitehouse <richard@whiuk.com>"]
 edition = "2018"
+
+[dependencies]
+num = "0.2.0"

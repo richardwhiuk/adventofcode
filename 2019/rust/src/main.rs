@@ -37,4 +37,5 @@ fn main() {
     eleven::run_a();
     eleven::run_b();
     twelve::run_a();
+    twelve::run_b();
 }
