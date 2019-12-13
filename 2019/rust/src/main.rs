@@ -40,4 +40,5 @@ fn main() {
     twelve::run_a();
     twelve::run_b();
     thirteen::run_a();
+    thirteen::run_b();
 }
