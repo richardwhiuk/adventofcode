@@ -8,22 +8,21 @@
 #[derive(Debug, Clone, Copy, PartialEq)]
 struct Axis {
     position: i32,
-    velocity: i32
+    velocity: i32,
 }
 
 impl Axis {
-  fn apply_gravity(&mut self, source: &Axis) {
+    fn apply_gravity(&mut self, source: &Axis) {
         if self.position < source.position {
             self.velocity += 1;
         } else if self.position > source.position {
             self.velocity -= 1;
         }
-}
+    }
 
-fn apply_velocity(&mut self) {
+    fn apply_velocity(&mut self) {
         self.position += self.velocity;
-}
-
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -31,24 +30,33 @@ struct Moon {
     name: &'static str,
     x: Axis,
     y: Axis,
-    z: Axis
+    z: Axis,
 }
 
 impl Moon {
     fn new(name: &'static str, x: i32, y: i32, z: i32) -> Self {
         Self {
             name,
-            x: Axis { position: x, velocity: 0},
-            y: Axis { position: y, velocity: 0},
-            z: Axis { position: z, velocity: 0},
+            x: Axis {
+                position: x,
+                velocity: 0,
+            },
+            y: Axis {
+                position: y,
+                velocity: 0,
+            },
+            z: Axis {
+                position: z,
+                velocity: 0,
+            },
         }
     }
 
     fn energy(&self) -> i32 {
-       let pot = self.x.position.abs() + self.y.position.abs() + self.z.position.abs();
-       let vel = self.x.velocity.abs() + self.y.velocity.abs() + self.z.velocity.abs();
-       println!("{} pot: {} vel: {}", self.name, pot, vel);
-       pot * vel
+        let pot = self.x.position.abs() + self.y.position.abs() + self.z.position.abs();
+        let vel = self.x.velocity.abs() + self.y.velocity.abs() + self.z.velocity.abs();
+        println!("{} pot: {} vel: {}", self.name, pot, vel);
+        pot * vel
     }
 
     fn apply_gravity(&mut self, source: &Moon) {
@@ -71,9 +79,9 @@ pub fn run_a() {
         Moon::new("c", -4, -6, 7),
         Moon::new("d", 6, -9, -11),
     ];
-        let moons = n_steps(moons, 1000);
-        let energy = moons.iter().fold(0, |res, m| res + m.energy());
-println!("12a: {}", energy);
+    let moons = n_steps(moons, 1000);
+    let energy = moons.iter().fold(0, |res, m| res + m.energy());
+    println!("12a: {}", energy);
 }
 
 pub fn run_b() {
@@ -106,9 +114,9 @@ fn determine_cycle_axis(start_x: Vec<Axis>) -> u64 {
         steps += 1;
     }
 
-   println!("{} steps in x", steps);
+    println!("{} steps in x", steps);
 
-   steps
+    steps
 }
 
 fn step_moons(moons: Vec<Moon>) -> Vec<Moon> {
@@ -158,7 +166,7 @@ fn step_axis(moons: Vec<Axis>) -> Vec<Axis> {
     moons
 }
 
-fn n_steps(mut moons: Vec<Moon>, n :u32) -> Vec<Moon> {
+fn n_steps(mut moons: Vec<Moon>, n: u32) -> Vec<Moon> {
     for step in 0..n {
         //println!("{}: {:?}", step, moons);
         moons = step_moons(moons);
