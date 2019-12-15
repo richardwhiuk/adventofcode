@@ -22,6 +22,13 @@ impl IntcodeState {
         }
     }
 
+    pub fn unwrapc(self) -> IntcodeVm {
+        match self {
+            NeedMoreInput(vm) => vm,
+            Finished(f) => panic!("Finished"),
+        }
+    }
+
     pub fn output(&self) -> &Vec<i64> {
         match self {
             NeedMoreInput(vm) => &vm.output,

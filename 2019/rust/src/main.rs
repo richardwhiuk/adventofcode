@@ -1,5 +1,6 @@
 mod eight;
 mod eleven;
+mod fifteen;
 mod five;
 mod four;
 mod fourteen;
@@ -43,4 +44,7 @@ fn main() {
     thirteen::run_a();
     thirteen::run_b();
     fourteen::run_a();
+    fourteen::run_b();
+    fifteen::run_a();
+    fifteen::run_b();
 }
