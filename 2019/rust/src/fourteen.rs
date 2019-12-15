@@ -4,8 +4,8 @@ use std::io::BufRead;
 use std::io::BufReader;
 
 struct Recipe {
-    ingredients: Vec<(u32, String)>,
-    amount: u32,
+    ingredients: Vec<(u64, String)>,
+    amount: u64,
 }
 
 impl Recipe {
@@ -33,21 +33,73 @@ impl Recipe {
 }
 
 pub fn run_a() {
-    println!("14a: {}", determine_ore("14.txt"));
+    println!("14a: {}", determine_single_fuel("14.txt"));
 }
 
-fn determine_ore(file: &'static str) -> u32 {
-    let recipes: HashMap<String, Recipe> =
-        BufReader::new(File::open(file).expect("Unable to open file"))
-            .lines()
-            .map(Result::unwrap)
-            .map(Recipe::parse)
-            .collect();
+pub fn run_b() {
+    println!("14b: {}", determine_max_fuel("14.txt"));
+}
 
-    let mut required: HashMap<String, u32> = HashMap::new();
-    required.insert("FUEL".to_string(), 1);
+fn get_recipes(file: &'static str) -> HashMap<String, Recipe> {
+    BufReader::new(File::open(file).expect("Unable to open file"))
+        .lines()
+        .map(Result::unwrap)
+        .map(Recipe::parse)
+        .collect()
+}
 
-    let mut surplus: HashMap<String, u32> = HashMap::new();
+fn determine_single_fuel(file: &'static str) -> u64 {
+    determine_ore(1, &get_recipes(file))
+}
+
+fn determine_max_fuel(file: &'static str) -> u64 {
+    let recipes = get_recipes(file);
+
+    let single = determine_ore(1, &recipes);
+
+    let max_ore = 1000000000000;
+
+    // Initial lower bound - just divide max ore by ore for a single fuel.
+    let mut min_fuel = max_ore / single;
+
+    // Unobtainable upper bound
+    let mut max_fuel = None;
+
+    loop {
+        let attempt = match max_fuel {
+            None => min_fuel * 2,
+            Some(cmax_fuel) => {
+                if (min_fuel + 1) == cmax_fuel {
+                    return min_fuel;
+                }
+
+                let mut attempt = (min_fuel + cmax_fuel) / 2;
+
+                if attempt == min_fuel {
+                    attempt += 1;
+                }
+
+                attempt
+            }
+        };
+
+        print!("Trying: {} ({}/{:?}) ... ", attempt, min_fuel, max_fuel);
+
+        if determine_ore(attempt, &recipes) > max_ore {
+            println!("too big");
+            max_fuel = Some(attempt);
+        } else {
+            println!("success");
+            min_fuel = attempt;
+        }
+    }
+}
+
+fn determine_ore(required_fuel: u64, recipes: &HashMap<String, Recipe>) -> u64 {
+    let mut required: HashMap<String, u64> = HashMap::new();
+    required.insert("FUEL".to_string(), required_fuel);
+
+    let mut surplus: HashMap<String, u64> = HashMap::new();
 
     while !complete(&required) {
         let mut next = HashMap::new();
@@ -100,12 +152,12 @@ fn determine_ore(file: &'static str) -> u32 {
     *required.get("ORE").expect("Expect amount of ORE required")
 }
 
-fn add(next: &mut HashMap<String, u32>, ingredient: String, amount: u32) {
+fn add(next: &mut HashMap<String, u64>, ingredient: String, amount: u64) {
     let existing = next.entry(ingredient).or_insert(0);
     *existing += amount;
 }
 
-fn complete(requirements: &HashMap<String, u32>) -> bool {
+fn complete(requirements: &HashMap<String, u64>) -> bool {
     requirements.keys().all(|k| k == "ORE")
 }
 
@@ -115,11 +167,19 @@ mod tests {
 
     #[test]
     fn test_a() {
-        assert_eq!(determine_ore("14_test_1.txt"), 31);
-        assert_eq!(determine_ore("14_test_2.txt"), 165);
-        assert_eq!(determine_ore("14_test_3.txt"), 13312);
-        assert_eq!(determine_ore("14_test_4.txt"), 180697);
-        assert_eq!(determine_ore("14_test_5.txt"), 2210736);
-        assert_eq!(determine_ore("14.txt"), 178154);
+        assert_eq!(determine_single_fuel("14_test_1.txt"), 31);
+        assert_eq!(determine_single_fuel("14_test_2.txt"), 165);
+        assert_eq!(determine_single_fuel("14_test_3.txt"), 13312);
+        assert_eq!(determine_single_fuel("14_test_4.txt"), 180697);
+        assert_eq!(determine_single_fuel("14_test_5.txt"), 2210736);
+        assert_eq!(determine_single_fuel("14.txt"), 178154);
+    }
+
+    #[test]
+    fn test_b() {
+        assert_eq!(determine_max_fuel("14_test_3.txt"), 82892753);
+        assert_eq!(determine_max_fuel("14_test_4.txt"), 5586022);
+        assert_eq!(determine_max_fuel("14_test_5.txt"), 460664);
+        assert_eq!(determine_max_fuel("14.txt"), 6226152);
     }
 }
