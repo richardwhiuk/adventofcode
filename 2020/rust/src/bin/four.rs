@@ -1,7 +1,7 @@
+use log::debug;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::result::Result as StdResult;
-use log::debug;
 
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
