@@ -69,16 +69,20 @@ fn b(path: &str) -> Result<()> {
     let mut mutated = HashSet::new();
 
     while result.0 {
-        let mut changed = false;
+        let mut changed = None;
         result = run(&instructions, |ix, instruction| {
             use Instruction::*;
-            if !changed {
+            if let Some(change) = changed {
+                if change == ix {
+                    *instruction = Nop;
+                }
+            } else {
                 match instruction {
                     Jmp(_) => {
                         if !mutated.contains(&ix) {
                             mutated.insert(ix);
                             *instruction = Nop;
-                            changed = true;
+                            changed = Some(ix);
                         }
                     }
                     _ => {}
