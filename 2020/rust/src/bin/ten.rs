@@ -24,18 +24,23 @@ fn a(path: &str) -> Result<()> {
     is.sort();
 
     let mut diffs = HashMap::new();
-    diffs.insert(3,1);
+    diffs.insert(3, 1);
 
     let mut prev = 0;
     for i in is {
-       let a = diffs.entry(i-prev).or_insert(0);
-       *a += 1;
-       prev = i;
+        let a = diffs.entry(i - prev).or_insert(0);
+        *a += 1;
+        prev = i;
     }
 
     debug!("Diffs: {:?}", diffs);
 
-    println!("A Result: {} * {} => {}", diffs[&1], diffs[&3], diffs[&1] * diffs[&3]);
+    println!(
+        "A Result: {} * {} => {}",
+        diffs[&1],
+        diffs[&3],
+        diffs[&1] * diffs[&3]
+    );
 
     Ok(())
 }
@@ -44,20 +49,19 @@ fn combine(start: i64, data: &[i64], end: i64) -> u64 {
     debug!("Checking {} - {:?} - {}", start, data, end);
 
     if data.len() >= 1 {
-       if data[0] - start > 3 {
-           0 
-       } else {
-           // Take the number
-           combine(data[0], &data[1..], end) + combine(start, &data[1..], end)
-       }
+        if data[0] - start > 3 {
+            0
+        } else {
+            // Take the number
+            combine(data[0], &data[1..], end) + combine(start, &data[1..], end)
+        }
     } else {
-       if end - start > 3 {
-           0
-       } else {
-           1
-       }
+        if end - start > 3 {
+            0
+        } else {
+            1
+        }
     }
-
 }
 
 fn combinations(input: Vec<i64>) -> u64 {
@@ -67,7 +71,7 @@ fn combinations(input: Vec<i64>) -> u64 {
 
     let start = input[0];
 
-    combine(start, &input[1..input.len() - 1], input[input.len() -1])
+    combine(start, &input[1..input.len() - 1], input[input.len() - 1])
 }
 
 fn b(path: &str) -> Result<()> {
@@ -79,11 +83,11 @@ fn b(path: &str) -> Result<()> {
     let mut group = vec![0];
     let mut prev = 0;
     for i in is {
-        if i-prev == 3 {
-          groups.push(group);
-          group = vec![i];
+        if i - prev == 3 {
+            groups.push(group);
+            group = vec![i];
         } else {
-          group.push(i);
+            group.push(i);
         }
         prev = i;
     }
@@ -117,4 +121,3 @@ fn read(path: &str) -> Result<Vec<i64>> {
 
     Ok(res)
 }
-
