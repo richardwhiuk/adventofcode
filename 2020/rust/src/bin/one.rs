@@ -1,7 +1,4 @@
-type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
-
-use std::fs::File;
-use std::io::{BufRead, BufReader};
+pub use rust::*;
 
 fn main() -> Result<()> {
     // 1A
@@ -16,14 +13,12 @@ fn main() -> Result<()> {
 }
 
 fn read(path: &str) -> Result<Vec<u32>> {
-    let file = File::open(path)?;
-    let reader = BufReader::new(file);
-
     let mut num: Vec<u32> = vec![];
 
-    for line in reader.lines() {
-        num.push(line?.parse()?);
-    }
+    reader(path, |line| {
+        num.push(line.parse()?);
+        Ok(())
+    })?;
 
     Ok(num)
 }
