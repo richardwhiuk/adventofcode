@@ -195,7 +195,7 @@ struct Waypoint {
 }
 
 impl Waypoint {
-    fn rotate(&mut self, deg: i32){
+    fn rotate(&mut self, deg: i32) {
         if deg % 90 != 0 {
             panic!("Urgh, not 90 degree angle");
         }
