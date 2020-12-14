@@ -17,9 +17,9 @@ struct BusInfo {
     ids: Vec<i64>,
 }
 
-fn next(timestamp : i64, bus : i64) -> i64 {
-  let next = (((timestamp - 1) / bus) + 1) * bus;
-  next - timestamp
+fn next(timestamp: i64, bus: i64) -> i64 {
+    let next = (((timestamp - 1) / bus) + 1) * bus;
+    next - timestamp
 }
 
 fn a(path: &str) -> Result<()> {
@@ -31,11 +31,12 @@ fn a(path: &str) -> Result<()> {
         .next()
         .unwrap()?
         .split(",")
-        .filter_map(|s| s.parse().ok()).collect();
+        .filter_map(|s| s.parse().ok())
+        .collect();
 
     let bi = BusInfo { timestamp, ids };
 
-    let mut earliest : Option<(i64, i64)>  = None;
+    let mut earliest: Option<(i64, i64)> = None;
 
     for bus in bi.ids {
         let next = next(bi.timestamp, bus);
@@ -68,10 +69,10 @@ fn b(path: &str) -> Result<()> {
         .split(",")
         .map(|s| s.parse().ok())
         .enumerate()
-        .filter_map(|(a, b)| b.map(|b| (a as i64,b)))
+        .filter_map(|(a, b)| b.map(|b| (a as i64, b)))
         .collect();
 
-    ids.sort_by_key(|(_,b)| -b);
+    ids.sort_by_key(|(_, b)| -b);
 
     let mut guess = ids[0].1 - ids[0].0;
     let mut add = ids[0].1;
@@ -83,20 +84,20 @@ fn b(path: &str) -> Result<()> {
         // Work out remainder
         let mut t = *a;
         while t > 0 {
-           t -= b;
+            t -= b;
         }
         let rem = -t;
 
-        println!("  Fixing {} mod {}",rem, b);
+        println!("  Fixing {} mod {}", rem, b);
         while (guess % b) != rem {
-           guess += add;
+            guess += add;
         }
         add *= b;
     }
 
     for id in &ids {
-      let check = next(guess, id.1);
-      println!("{}: {} => {} - {:?}", id.0, id.1, check, check == id.0);
+        let check = next(guess, id.1);
+        println!("{}: {} => {} - {:?}", id.0, id.1, check, check == id.0);
     }
 
     println!("B Result: {}", guess);

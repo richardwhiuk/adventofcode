@@ -1,8 +1,8 @@
 pub type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
+pub use std::collections::HashMap;
 pub use std::fs::File;
 pub use std::io::{BufRead, BufReader};
-pub use std::collections::HashMap;
 
 pub use log::debug;
 
