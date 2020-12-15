@@ -30,7 +30,9 @@ fn read(path: &str) -> Result<Vec<Instruction>> {
     let r = regex::Regex::new(r"(?:mask = ([X01]+)|mem\[(\d+)\] = (\d+))").unwrap();
 
     reader(path, |line| {
-        let r = r.captures(&line).unwrap_or_else(|| panic!("Failed to match {}", line));
+        let r = r
+            .captures(&line)
+            .unwrap_or_else(|| panic!("Failed to match {}", line));
 
         res.push(if let Some(mask) = r.get(1) {
             use Mask::*;
@@ -62,7 +64,7 @@ fn read(path: &str) -> Result<Vec<Instruction>> {
 fn a(path: &str) -> Result<()> {
     let instructions = read(path)?;
 
-    let mut memory : HashMap<u64, u64> = HashMap::new();
+    let mut memory: HashMap<u64, u64> = HashMap::new();
     let mut bitmask = vec![];
 
     for instruction in instructions {
@@ -87,7 +89,7 @@ fn a(path: &str) -> Result<()> {
                     mask <<= 1;
                 }
                 debug!("Setting {} to {}", address, value);
-                memory.insert(address,value);
+                memory.insert(address, value);
             }
         }
     }
@@ -100,7 +102,7 @@ fn a(path: &str) -> Result<()> {
 fn b(path: &str) -> Result<()> {
     let instructions = read(path)?;
 
-    let mut memory : HashMap<u64, u64> = HashMap::new();
+    let mut memory: HashMap<u64, u64> = HashMap::new();
     let mut bitmask = vec![];
 
     for instruction in instructions {
@@ -117,27 +119,26 @@ fn b(path: &str) -> Result<()> {
                     use Mask::*;
                     match bit {
                         Allow => {
-                            address = address.into_iter().map(|v| {
-                               vec![v | mask, v & (!mask)]
-                            }).flatten().collect();
+                            address = address
+                                .into_iter()
+                                .map(|v| vec![v | mask, v & (!mask)])
+                                .flatten()
+                                .collect();
                         }
-                        One => {
-                            address.iter_mut().for_each(|v| *v |= mask)
-                        }
+                        One => address.iter_mut().for_each(|v| *v |= mask),
                         Zero => {}
                     }
                     mask <<= 1;
                 }
                 for address in address {
                     debug!("Setting {} to {}", address, value);
-                    memory.insert(address,value);
+                    memory.insert(address, value);
                 }
             }
         }
     }
 
     println!("B Result: {:?}", memory.values().fold(0, |c, v| c + v));
-
 
     Ok(())
 }
