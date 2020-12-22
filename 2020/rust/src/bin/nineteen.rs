@@ -138,11 +138,16 @@ fn b(path: &str) -> Result<()> {
 
     // Fixup
     use RulePart::SubRule;
-    puzzle.rules.insert(8, vec![vec![SubRule(42)], vec![SubRule(42), SubRule(8)]]);
-    puzzle.rules.insert(11, vec![
-        vec![SubRule(42), SubRule(31)],
-        vec![SubRule(42), SubRule(11), SubRule(31)],
-    ]);
+    puzzle
+        .rules
+        .insert(8, vec![vec![SubRule(42)], vec![SubRule(42), SubRule(8)]]);
+    puzzle.rules.insert(
+        11,
+        vec![
+            vec![SubRule(42), SubRule(31)],
+            vec![SubRule(42), SubRule(11), SubRule(31)],
+        ],
+    );
 
     solve(puzzle, "B")
 }
