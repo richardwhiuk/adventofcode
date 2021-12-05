@@ -39,7 +39,7 @@ fn test(file: &str) {
         } else {
             break;
         }
-        window = lines.iter().map(|a| *a).take(3).collect();
+        window = lines.iter().copied().take(3).collect();
         lines = lines.into_iter().skip(1).collect();
     }
 

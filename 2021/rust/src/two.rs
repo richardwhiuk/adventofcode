@@ -18,7 +18,7 @@ struct Movement {
 
 impl Movement {
     fn parse(s: &str) -> Self {
-        let mut parts = s.split(" ");
+        let mut parts = s.split(' ');
         use Direction::*;
         Movement {
             dir: match parts.next().unwrap() {

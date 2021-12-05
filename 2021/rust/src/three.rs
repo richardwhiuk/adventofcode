@@ -5,7 +5,7 @@ fn main() {
     test("src/three-test.txt");
 }
 
-fn analyze(file: &String, less: bool) -> u64 {
+fn analyze(file: &str, less: bool) -> u64 {
     let mut i = 0;
 
     let mut numbers: Vec<&str> = file.lines().collect();
@@ -44,8 +44,7 @@ fn test(file: &str) {
     let mut vs: Vec<Vec<bool>> = vec![];
 
     for line in file.lines() {
-        let mut i = 0;
-        for c in line.chars() {
+        for (i, c) in line.chars().enumerate() {
             if vs.len() <= i {
                 vs.push(vec![]);
             }
@@ -54,7 +53,6 @@ fn test(file: &str) {
             } else {
                 vs[i].push(true);
             }
-            i += 1;
         }
     }
 

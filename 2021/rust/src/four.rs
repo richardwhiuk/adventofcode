@@ -14,8 +14,8 @@ impl Board {
         Board(
             x.skip(1)
                 .map(|x| {
-                    x.split(" ")
-                        .filter(|x| x.len() > 0)
+                    x.split(' ')
+                        .filter(|x| !x.is_empty())
                         .map(|x| (x.parse().unwrap(), false))
                         .collect()
                 })
@@ -70,7 +70,7 @@ impl Board {
             }
         }
 
-        return false;
+        false
     }
 
     fn score(&self) -> u32 {
@@ -93,7 +93,7 @@ fn test(f: &str) {
     let input: Vec<u32> = data
         .next()
         .unwrap()
-        .split(",")
+        .split(',')
         .map(|x| x.parse().unwrap())
         .collect();
     let mut boards: Vec<Board> = data.chunks(6).into_iter().map(Board::parse).collect();

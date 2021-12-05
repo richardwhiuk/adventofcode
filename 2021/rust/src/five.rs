@@ -1,3 +1,4 @@
+#![allow(clippy::comparison_chain)]
 use std::cmp::{max, min};
 use std::fs::read_to_string;
 
@@ -32,7 +33,7 @@ impl Map {
                     print!("{}", *v);
                 }
             }
-            println!("");
+            println!();
         }
     }
 
@@ -58,7 +59,7 @@ fn test(f: &str) {
             let line: Vec<(i32, i32)> = line
                 .split(" -> ")
                 .map(|position| {
-                    let pos: Vec<i32> = position.split(",").map(|x| x.parse().unwrap()).collect();
+                    let pos: Vec<i32> = position.split(',').map(|x| x.parse().unwrap()).collect();
                     (pos[0], pos[1])
                 })
                 .collect();
