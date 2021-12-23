@@ -26,5 +26,9 @@ path = "src/four.rs"
 name = "five"
 path = "src/five.rs"
 
+[[bin]]
+name = "six"
+path = "src/six.rs"
+
 [dependencies]
 itertools = "0.10.1"
