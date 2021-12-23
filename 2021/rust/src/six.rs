@@ -6,19 +6,19 @@ fn main() {
 }
 
 fn day(model: &mut Vec<u64>) {
-        let new = model[0];
-        for v in 0..=7 {
-           model[v] = model[v + 1];
-        }
-        model[8] = new;
-        model[6] += new;
+    let new = model[0];
+    for v in 0..=7 {
+        model[v] = model[v + 1];
+    }
+    model[8] = new;
+    model[6] += new;
 }
 
 fn test(f: &str) {
     let data = read_to_string(f).unwrap();
-    let data : Vec<usize> = data.trim().split(',').map(|x| x.parse().unwrap()).collect();
+    let data: Vec<usize> = data.trim().split(',').map(|x| x.parse().unwrap()).collect();
 
-    let mut model : Vec<u64> = vec![0; 9];
+    let mut model: Vec<u64> = vec![0; 9];
 
     for initial in data {
         model[initial] += 1;
@@ -36,4 +36,3 @@ fn test(f: &str) {
 
     println!("A: {}", model.iter().cloned().sum::<u64>());
 }
-

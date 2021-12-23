@@ -5,7 +5,10 @@ fn main() {
     test("src/seven.txt");
 }
 
-fn determine_least<F>(data: &Vec<i64>, min: i64, max: i64, f: F) -> (i64, i64) where F: Fn(i64, i64) -> i64 {
+fn determine_least<F>(data: &Vec<i64>, min: i64, max: i64, f: F) -> (i64, i64)
+where
+    F: Fn(i64, i64) -> i64,
+{
     let mut least = None;
 
     for pos in min..=max {
@@ -20,12 +23,15 @@ fn determine_least<F>(data: &Vec<i64>, min: i64, max: i64, f: F) -> (i64, i64) w
     least.unwrap()
 }
 
-fn determine_fuel<F>(data: &Vec<i64>, pos: i64, f: F) -> i64 where F: Fn(i64, i64) -> i64 {
-        let mut fuel = 0;
-        for d in data {
-            fuel += f(pos, *d);
-        }
-fuel
+fn determine_fuel<F>(data: &Vec<i64>, pos: i64, f: F) -> i64
+where
+    F: Fn(i64, i64) -> i64,
+{
+    let mut fuel = 0;
+    for d in data {
+        fuel += f(pos, *d);
+    }
+    fuel
 }
 
 fn test(f: &str) {
