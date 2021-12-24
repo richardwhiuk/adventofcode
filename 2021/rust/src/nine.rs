@@ -57,7 +57,10 @@ fn test(f: &str) {
         .map(|x| {
             x.trim()
                 .chars()
-                .map(|x| x.to_digit(10).unwrap_or_else(|| panic!("Unexpected digit: {}", x)))
+                .map(|x| {
+                    x.to_digit(10)
+                        .unwrap_or_else(|| panic!("Unexpected digit: {}", x))
+                })
                 .collect()
         })
         .collect();
