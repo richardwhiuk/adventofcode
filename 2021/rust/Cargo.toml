@@ -82,6 +82,10 @@ path = "src/eighteen.rs"
 name = "twenty"
 path = "src/twenty.rs"
 
+[[bin]]
+name = "twentyone"
+path = "src/twentyone.rs"
+
 [dependencies]
 itertools = "0.10.1"
 lazy_static = "1.4.0"
