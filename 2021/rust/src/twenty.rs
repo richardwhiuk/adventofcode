@@ -77,19 +77,10 @@ fn step(input: &mut Vec<Vec<bool>>, background: &mut bool, mapper: &[bool]) {
 fn test(f: &str) {
     let data = read_to_string(f).unwrap();
     let mut data = data.lines();
-    let mapper: Vec<bool> = data
-        .next()
-        .unwrap()
-        .chars()
-        .map(|x| x == '#' )
-        .collect();
+    let mapper: Vec<bool> = data.next().unwrap().chars().map(|x| x == '#').collect();
     let _ = data.next();
     let mut input: Vec<Vec<bool>> = data
-        .map(|x| {
-            x.chars()
-                .map(|x| x == '#')
-                .collect()
-        })
+        .map(|x| x.chars().map(|x| x == '#').collect())
         .collect();
 
     // println!("Initial");
